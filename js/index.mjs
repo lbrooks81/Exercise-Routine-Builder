@@ -4,68 +4,160 @@
 // TODO Delete Workouts
 // TODO Time Based Workouts
 
-let workoutNum = 1;
+let workoutNum = 0;
 
 document.addEventListener('DOMContentLoaded', () =>
 {
+   // Add initial workout
+   addWorkout();
+
    document.getElementById('new-workout')
        .addEventListener('click', () =>
    {
       addWorkout();
    });
 
-   document.getElementsByClassName('type')
 });
-function addWorkout() {
+function addWorkout()
+{
     workoutNum++;
+    let currentWorkout = workoutNum;
 
     const newWorkout = document.createElement('div', );
-    newWorkout.setAttribute("id", `workout-${workoutNum}`);
+    newWorkout.setAttribute("id", `workout-${currentWorkout}`);
     newWorkout.innerHTML =
     `
-        <label for="workout-input-${workoutNum}">Workout Name</label>
-        <input id="workout-input-${workoutNum}" class="input" type="text">
-    
-        <label for=workout-type-${workoutNum}></label>
-        <select id="workout-type-${workoutNum}" class="type">
-            <option value="time">Time-Based</option>
-            <option value="rep">Repetition-Based</option>
-        </select>
+        <div class="input-group mb-2 w-25">
+            <div class="input-group-prepend">
+                <span class="input-group-text" id="input-${currentWorkout}" >
+                    <label for="workout-input-${currentWorkout}">Workout Name</label>
+                </span>
+            </div>
+            <input class="form-control" id="workout-input-${currentWorkout}" type="text">
+        </div>
+       
+  
+        <div class="input-group mb-2">
+            <div class="input-group-prepend">
+                <label class="input-group-text" for="workout-type-${currentWorkout}">Workout Type</label>
+            </div>  
+            <select class="custom-select type" id="workout-type-${currentWorkout}">
+                <option value="default" hidden>Select a Workout Type</option>
+                <option value="time">Time-Based</option>
+                <option value="rep">Repetition-Based</option>
+            </select>
+        </div>
+       
+        <div class="input-group mb-2 w-25" id="time-${currentWorkout}">
+            <div class="input-group-prepend">
+                <span class="input-group-text">
+                    <label for="time-${currentWorkout}-input"></label>
+                </span>
+            </div>
+            <input class="form-control w-100" id="time-${currentWorkout}-input" type="number">
+            
+            <div class="input-group">
+                <span id="timer-${currentWorkout}-container">
+                    <button class="btn btn-primary" id="timer-${currentWorkout}-btn" type="button">Start Timer</button>
+                </span>
+                <input class="form-control w-100" id="timer-${currentWorkout}-display">
+            </div>
+            
+            
+        </div>
         
-        <label for="time-${workoutNum}"></label>
-        <input id="time-${workoutNum}" class="time" type="number">
         
-    
-        <label for="reps-${workoutNum}"></label>
-        <input id="reps-${workoutNum}" class="reps">
+        <div class="input-group mb-2 w-25" id="reps-${currentWorkout}">
+            <div class="input-group-prepend">
+                <span class="input-group-text">
+                    <label for="reps-${currentWorkout}-input"></label>
+                </span>
+            </div>
+            <input class="form-control w-100" id="reps-${currentWorkout}-input">
+        </div>        
         
-    
-        <label for="sets-${workoutNum}"></label>
-        <input id="sets-${workoutNum}" class="sets">
-        </br>
+        <div class="input-group mb-2 w-25" id="sets-${currentWorkout}">
+            <div class="input-group-prepend" >
+                <span class="input-group-text">
+                    <label for="sets-${currentWorkout}-input"></label>
+                </span>
+            </div>
+            <input class="form-control w-100" id="sets-${currentWorkout}-input">
+        </div>
     `;
+
     document.getElementById('form').appendChild(newWorkout);
-    document.getElementById(`workout-type-${workoutNum}`)
+
+    // Set inputs' display to none by default
+    document.getElementById(`reps-${currentWorkout}`)
+        .style.display = 'none';
+
+    document.getElementById(`sets-${currentWorkout}`)
+        .style.display = 'none';
+
+    document.getElementById(`time-${currentWorkout}`)
+        .style.display = 'none';
+
+
+    // Changes visibility of inputs based on the workout type
+    document.getElementById(`workout-type-${currentWorkout}`)
         .addEventListener('change', (e) =>
     {
-        const selection = e.target.value;
+        setWorkoutTypeVisibility(e, currentWorkout);
+    });
 
-        if(selection === 'rep')
-        {
-            document.getElementById(`reps-${workoutNum}`)
-                .style.display = 'block';
-            document.querySelector(`label[for="reps-${workoutNum}"]`)
-                .textContent = 'Reps';
+    document.getElementById(`timer-${currentWorkout}-btn`)
+        .addEventListener('click', () =>
+    {
+        let time = document.getElementById(`time-${currentWorkout}-input`);
+        startCountdown(time, currentWorkout);
+    });
 
-            document.getElementById(`sets-${workoutNum}`)
-                .style.display = 'block';
-            document.querySelector(`label[for="sets-${workoutNum}"]`)
-                .textContent = 'Sets';
+}
 
-        }
-        else
-        {
+function setWorkoutTypeVisibility(e, currentWorkout)
+{
+    const selection = e.target.value;
 
-        }
-    })
+    if(selection === 'rep')
+    {
+        document.getElementById(`reps-${currentWorkout}`)
+            .style.display = 'block';
+        document.querySelector(`label[for="reps-${currentWorkout}-input"]`)
+            .textContent = 'Reps';
+
+        document.getElementById(`sets-${currentWorkout}`)
+            .style.display = 'block';
+        document.querySelector(`label[for="sets-${currentWorkout}-input"]`)
+            .textContent = 'Sets';
+
+
+        document.getElementById(`time-${currentWorkout}`)
+            .style.display = 'none';
+    }
+    else if(selection === 'time')
+    {
+        document.getElementById(`time-${currentWorkout}`)
+            .style.display = 'block';
+        document.querySelector(`label[for="time-${currentWorkout}-input"]`)
+            .textContent = 'Set Time';
+
+
+        document.getElementById(`reps-${currentWorkout}`)
+            .style.display = 'none';
+        document.getElementById(`sets-${currentWorkout}`)
+            .style.display = 'none';
+
+    }
+}
+
+async function startCountdown(time, currentWorkout)
+{
+
+    for(let i = 0; i < time; i++)
+    {
+        await new Promise(r => setInterval(r, 1000));
+        time--;
+        document.getElementById(`timer-${currentWorkout}-display`).textContent = time;
+    }
 }
