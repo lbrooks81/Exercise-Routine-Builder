@@ -23,7 +23,7 @@ function addWorkout()
     workoutNum++;
     let currentWorkout = workoutNum;
 
-    const newWorkout = document.createElement('div', );
+    const newWorkout = document.createElement('div');
     newWorkout.setAttribute("id", `workout-${currentWorkout}`);
     newWorkout.innerHTML =
     `
@@ -35,8 +35,7 @@ function addWorkout()
             </div>
             <input class="form-control" id="workout-input-${currentWorkout}" type="text">
         </div>
-       
-  
+        
         <div class="input-group mb-2">
             <div class="input-group-prepend">
                 <label class="input-group-text" for="workout-type-${currentWorkout}">Workout Type</label>
@@ -54,18 +53,15 @@ function addWorkout()
                     <label for="time-${currentWorkout}-input"></label>
                 </span>
             </div>
-            <input class="form-control w-100" id="time-${currentWorkout}-input" type="number">
+            <input class="form-control mb-2 w-100" id="time-${currentWorkout}-input" type="time">
             
             <div class="input-group">
-                <span id="timer-${currentWorkout}-container">
+                <span class="input-group-text" id="timer-${currentWorkout}-container">
                     <button class="btn btn-primary" id="timer-${currentWorkout}-btn" type="button">Start Timer</button>
                 </span>
-                <input class="form-control w-100" id="timer-${currentWorkout}-display">
+                <input class="form-control w-50" id="timer-${currentWorkout}-display" disabled>
             </div>
-            
-            
         </div>
-        
         
         <div class="input-group mb-2 w-25" id="reps-${currentWorkout}">
             <div class="input-group-prepend">
@@ -83,6 +79,12 @@ function addWorkout()
                 </span>
             </div>
             <input class="form-control w-100" id="sets-${currentWorkout}-input">
+        </div>
+        
+        <div class="mb-2" id="btn-container">
+            <button class="btn btn-primary" id="edit-btn-${currentWorkout}">Edit Workout</button>
+            <button class="btn btn-success" id="save-btn-${currentWorkout}">Save Workout</button>
+            <button class="btn btn-danger" id="remove-btn-${currentWorkout}">Remove Workout</button>
         </div>
     `;
 
@@ -106,12 +108,70 @@ function addWorkout()
         setWorkoutTypeVisibility(e, currentWorkout);
     });
 
+
+    document.getElementById(`edit-btn-${currentWorkout}`)
+        .addEventListener('click', (e) =>
+    {
+        let selection = document.getElementById(`workout-type-${currentWorkout}`).value;
+
+        e.preventDefault();
+        document.getElementById(`workout-input-${currentWorkout}`)
+            .removeAttribute('disabled');
+
+        if(selection === 'time')
+        {
+            document.getElementById(`time-${currentWorkout}-input`)
+                .removeAttribute('disabled');
+        }
+        else if(selection === 'rep')
+        {
+            document.getElementById(`reps-${currentWorkout}-input`)
+                .removeAttribute('disabled');
+
+            document.getElementById(`sets-${currentWorkout}-input`)
+                .removeAttribute('disabled');
+        }
+    });
+
+    document.getElementById(`save-btn-${currentWorkout}`)
+        .addEventListener('click', (e) =>
+    {
+        let selection = document.getElementById(`workout-type-${currentWorkout}`).value;
+
+        e.preventDefault();
+        document.getElementById(`workout-input-${currentWorkout}`)
+            .setAttribute('disabled', '');
+
+        if(selection === 'time')
+        {
+            document.getElementById(`time-${currentWorkout}-input`)
+                .setAttribute('disabled', '');
+        }
+        else if(selection === 'rep')
+        {
+            document.getElementById(`reps-${currentWorkout}-input`)
+                .setAttribute('disabled', '');
+
+            document.getElementById(`sets-${currentWorkout}-input`)
+                .setAttribute('disabled', '');
+        }
+    });
+
+    document.getElementById(`remove-btn-${currentWorkout}`)
+        .addEventListener('click', () =>
+    {
+        // TODO add pop-up with confirmation
+        document.getElementById('form').removeChild(newWorkout);
+    });
+
     document.getElementById(`timer-${currentWorkout}-btn`)
         .addEventListener('click', () =>
     {
         let time = document.getElementById(`time-${currentWorkout}-input`);
         startCountdown(time, currentWorkout);
     });
+
+
 
 }
 
