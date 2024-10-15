@@ -1,9 +1,53 @@
+#header-container
+{
+    margin: 0 auto;
+    text-align: center;
+    top: 0;
+    z-index: 1;
+    position: sticky;
+    border-bottom: grey;
+}
+
 th
 {
     width: 10%;
 }
 
+.checkbox
+{
+    height: inherit;
+    display: inline-flex;
+}
+
+.checkbox-item
+{
+    height: inherit;
+    display: inline-flex;
+}
+
 .timer-inputs
 {
     width: 3rem;
+}
+
+.timer-input-group
+{
+    align-items: center !important;
+}
+
+
+
+.rep
+{
+    flex: 1;
+}
+
+#type-container
+{
+    display: inline-flex;
+}
+
+.type
+{
+    flex: 1;
 }
