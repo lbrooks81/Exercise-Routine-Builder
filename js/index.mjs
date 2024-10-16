@@ -26,18 +26,27 @@ class Exercise
     timerSeconds;
     timerOutput;
     timerId;
+    repsInput;
+    repsLabel;
+    setsInput;
+    setsLabel;
+    timerBlock;
 
     constructor()
     {
         this.exerciseNum = exerciseNumCounter++;
         this.timerId = 0;
-        this.timeRemaining = 0;
+        this.timeRemaining = 1000;
         this.addExercise();
+        this.repsInput = document.getElementById(`reps-${this.exerciseNum}`);
+        this.repsLabel = document.querySelector(`label[for="reps-${this.exerciseNum}-input"]`);
+        this.setsInput = document.getElementById(`sets-${this.exerciseNum}`);
+        this.setsLabel = document.querySelector(`label[for="sets-${this.exerciseNum}-input"]`);
+        this.timerBlock = document.getElementById(`time-${this.exerciseNum}`);
     }
     addExercise()
     {
-        const newExercise = document.createElement('div');
-        newExercise.setAttribute("id", `exercise-${this.exerciseNum}`);
+        const newExercise = document.createElement('ti');
         newExercise.innerHTML =
         `
         <div class="d-inline-block" id="exercise-${this.exerciseNum}">
@@ -50,27 +59,27 @@ class Exercise
                 <input class="form-control" id="exercise-input-${this.exerciseNum}" type="text">
             </span>
             
-            <div class="input-group mb-2" id="type-container">
+            <div class="input-group mb-2">
                 <div class="input-group-prepend">
                     <label class="input-group-text type" for="exercise-type-${this.exerciseNum}">Exercise Type</label>
                 </div>  
                 <select class="custom-select type" id="exercise-type-${this.exerciseNum}">
-                    <option value="default" hidden>Select a Exercise Type</option>
+                    <option value="default" hidden>Select an Exercise Type</option>
                     <option value="time">Time-Based</option>
                     <option value="rep">Repetition-Based</option>
                 </select>
             </div>
            
             <div class="input-group my-2" id="time-${this.exerciseNum}">                
-                <div class="input-group timer-input-group">
+                <div class="timer-input-group">
                     <label for="hour-input-${this.exerciseNum}">H
-                        <input class="timer-inputs" id="hour-input-${this.exerciseNum}" type="number" value="0">
+                        <input class="timer-inputs" id="hour-input-${this.exerciseNum}" type="number" value="0" min="0">
                     </label>
                     <label for="minute-input-${this.exerciseNum}">M
-                        <input class="timer-inputs" id="minute-input-${this.exerciseNum}" type="number" value="0">
+                        <input class="timer-inputs" id="minute-input-${this.exerciseNum}" type="number" value="0" min="0">
                     </label>
                     <label for="second-input-${this.exerciseNum}">S
-                        <input class="timer-inputs" id="second-input-${this.exerciseNum}" type="number" value="0">
+                        <input class="timer-inputs" id="second-input-${this.exerciseNum}" type="number" value="0" min="0">
                     </label>                    
                     <button class="btn btn-primary" type="button" id="timer-${this.exerciseNum}-btn">Start Timer</button>
                     <button class="btn btn-danger" type="button" id="timer-${this.exerciseNum}-stop">Stop</button> 
@@ -80,26 +89,28 @@ class Exercise
                 </div>
             </div>
             
-            <div class="d-inline-flex" id="reps-container">
-                <div class="input-group mb-2 rep" id="reps-${this.exerciseNum}">
+            <div class="d-inline-flex reps" id="reps-container">
+                <div class="input-group mb-2" id="reps-${this.exerciseNum}">
                     <div class="input-group-prepend">
                         <span class="input-group-text">
                             <label for="reps-${this.exerciseNum}-input"></label>
                         </span>
                     </div>
-                    <input class="form-control w-100" id="reps-${this.exerciseNum}-input">
+                    <input class="form-control w-100" id="reps-${this.exerciseNum}-input" 
+                    type="number" min="0">
                 </div>        
                 
-                <div class="input-group mb-2 rep" id="sets-${this.exerciseNum}">
+                <div class="input-group mb-2 center" id="sets-${this.exerciseNum}">
                     <div class="input-group-prepend" >
                         <span class="input-group-text">
                             <label for="sets-${this.exerciseNum}-input"></label>
                         </span>
                     </div>
-                    <input class="form-control w-100" id="sets-${this.exerciseNum}-input">
+                    <input class="form-control w-100" id="sets-${this.exerciseNum}-input" 
+                    type="number" min="0">
                 </div>
             </div>
-            <div class="mb-2" id="btn-container">
+            <div class="mb-2 center" id="btn-container">
                 <button class="btn btn-primary" type="button" id="edit-btn-${this.exerciseNum}">Edit Exercise</button>
                 <button class="btn btn-success" type="button" id="save-btn-${this.exerciseNum}">Save Exercise</button>
                 <button class="btn btn-danger" type="button" id="remove-btn-${this.exerciseNum}">Remove Exercise</button>
@@ -107,19 +118,23 @@ class Exercise
         </div>
         `;
 
-        const exercise = document.createElement("div");
-        exercise.setAttribute("display", "inline-block");
+        const div = document.createElement("div");
+        div.classList.add('center');
 
-        const checkboxDiv = document.createElement("div");
+        const exercise = document.createElement("tr");
+        exercise.classList.add('exercises');
+        exercise.setAttribute("id", `exercise-${this.exerciseNum}`);
+
+
+        const checkboxDiv = document.createElement("ti");
         checkboxDiv.classList.add('checkbox-item');
 
         exercise.appendChild(checkboxDiv);
         exercise.appendChild(newExercise);
-        document.getElementById("exercises").appendChild(exercise);
 
-        const parent = checkboxDiv.parentNode;
-        console.log(parent);
-        console.log(parent.style);
+        div.appendChild(exercise)
+
+        document.getElementById("exercises").appendChild(div);
 
         const checkbox = document.createElement("input");
         checkbox.setAttribute("id", `checkbox-${this.exerciseNum}`);
@@ -127,7 +142,6 @@ class Exercise
         checkbox.setAttribute("type", "checkbox");
 
         checkboxDiv.appendChild(checkbox);
-
 
         this.timerHours = document.getElementById(`hour-input-${this.exerciseNum}`);
         this.timerMinutes =  document.getElementById(`minute-input-${this.exerciseNum}`);
@@ -171,8 +185,7 @@ class Exercise
         document.getElementById(`remove-btn-${this.exerciseNum}`)
             .addEventListener('click', () =>
             {
-                // TODO add pop-up with confirmation
-                document.getElementById('exercises').removeChild(exercise);
+                document.getElementById('exercises').removeChild(div);
             });
 
 
@@ -208,8 +221,10 @@ class Exercise
         document.getElementById(`timer-${this.exerciseNum}-btn`)
             .addEventListener('click', () =>
             {
-                console.log(this.timeRemaining);
-                this.timeRemaining += 1000;
+                if(this.timerSeconds + this.timerMinutes + this.timerHours === 0)
+                {
+                    return;
+                }
                 this.timeChange = Date.now();
                 this.timerId = setInterval(function () {this.startTimer()}.bind(this), 1);
             });
@@ -229,52 +244,37 @@ class Exercise
 
         if(selection === 'rep')
         {
-            document.getElementById(`reps-${this.exerciseNum}`)
-                .style.display = 'block';
-            document.querySelector(`label[for="reps-${this.exerciseNum}-input"]`)
-                .textContent = 'Reps';
+            this.repsInput.style.display = 'block';
+            this.repsLabel.textContent = 'Reps';
+            this.setsInput.style.display = 'block';
+            this.setsLabel.textContent = 'Sets';
 
-            document.getElementById(`sets-${this.exerciseNum}`)
-                .style.display = 'block';
-            document.querySelector(`label[for="sets-${this.exerciseNum}-input"]`)
-                .textContent = 'Sets';
-
-
-            document.getElementById(`time-${this.exerciseNum}`)
-                .style.display = 'none';
+            this.timerBlock.style.display = 'none';
         }
         else if(selection === 'time')
         {
-            document.getElementById(`time-${this.exerciseNum}`)
-                .style.display = 'block';
-            document.getElementById(`minute-input-${this.exerciseNum}`).textContent = 'M';
+            this.timerBlock.style.display = 'block';
 
-            /*document.querySelectorAll(".timer-input-group label")[0]
-                .textContent = 'H';
-
-
-            document.querySelectorAll(".timer-input-group label")[1].innerHTML
-                // .textContent = 'M';
-
-            document.querySelectorAll(".timer-input-group label")[2]
-                .textContent = 'S';
-*/
-
-            document.getElementById(`reps-${this.exerciseNum}`)
-                .style.display = 'none';
-            document.getElementById(`sets-${this.exerciseNum}`)
-                .style.display = 'none';
+            this.repsInput.style.display = 'none';
+            this.setsInput.style.display = 'none';
         }
     }
 
     startTimer()
     {
+        if(this.timeRemaining <= 0)
+        {
+            return;
+        }
         this.timeRemaining -= Date.now() - this.timeChange;
         this.timeChange = Date.now();
 
         this.timerOutput.textContent = `${addZero(Math.floor(this.timeRemaining / 3600000 % 24), false)}:` +   // Hours
             `${addZero(Math.floor(this.timeRemaining / 60000 % 60), false)}:` +     // Minutes
             `${addZero(Math.floor(this.timeRemaining / 1000 % 60), false)}`;        // Seconds
+
+        document.getElementById(`timer-${this.exerciseNum}-btn`)
+            .setAttribute("disabled", '');
 
         if(this.timeRemaining <= 0)
         {
@@ -284,6 +284,14 @@ class Exercise
 
     stopTimer()
     {
+        document.getElementById(`timer-${this.exerciseNum}-btn`)
+            .removeAttribute("disabled");
+
+        this.timerHours.value = 0;
+        this.timerMinutes.value = 0;
+        this.timerSeconds.value = 0;
+        this.timeRemaining = 1000;
+
         clearInterval(this.timerId);
         this.timerOutput.textContent = "00:00:00";
         alert('Timer Finished');
@@ -292,9 +300,13 @@ class Exercise
     lockInputs()
     {
         let inputs = document.querySelectorAll("#exercise-" + this.exerciseNum + " input");
+        let checkbox = document.getElementById(`checkbox-${this.exerciseNum}`);
         for(let i of inputs)
         {
-            i.setAttribute('disabled', '');
+            if(i !== checkbox)
+            {
+                i.setAttribute('disabled', '');
+            }
         }
 
         document.getElementById(`exercise-type-${this.exerciseNum}`)
