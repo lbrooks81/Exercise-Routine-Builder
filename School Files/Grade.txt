@@ -1,0 +1,15 @@
+87/100
+
+Categories
+
+Effort - 15/20
+
+Constraints - 35/40
+- (-5) Missing validation of inputs.
+
+UI/UX - 12/15
+- (-3) UI could use some extra padding and margins between exercises.
+
+Bug-Free - 15/15
+
+Source Code Cleanliness - 10/10
